@@ -75,7 +75,7 @@ export function Login() {
             onChange={(e) => handleInputChange(e, "password")}
           />{" "}
           <br />
-          <div
+          {/* <div
             className="codeBox"
             style={{ display: "flex", alignContent: "center" }}
           >
@@ -97,7 +97,7 @@ export function Login() {
               onClick={getCode}
               className={"codeImg"}
             />
-          </div>
+          </div> */}
           <div className="btn">
             <button onClick={login}>登录</button>
             <Link to={Path.Register}>

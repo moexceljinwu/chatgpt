@@ -101,12 +101,12 @@ export function Register() {
           <br />
           <input
             type="text"
-            placeholder="推荐人（选填）"
+            placeholder="推荐码（如果无，请联系客服）"
             value={registerInfo.recommender}
             onChange={(e) => handleInputChange(e, "recommender")}
           />{" "}
           <br />
-          <div
+          {/* <div
             className="codeBox"
             style={{ display: "flex", alignContent: "center" }}
           >
@@ -128,7 +128,7 @@ export function Register() {
               className="codeImg"
               onClick={getCode}
             />
-          </div>
+          </div> */}
           <div className="btn">
             <button style={{ width: "250px" }} onClick={register}>
               注册
@@ -141,6 +141,9 @@ export function Register() {
             >
               已有账号？点击返回登录
             </span>
+          </div>
+          <div style={{ fontSize: "12px", marginTop: "20px" }}>
+            登录问题联系客服vx：xin2655585
           </div>
         </div>
       </div>

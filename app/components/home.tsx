@@ -122,24 +122,28 @@ function Screen() {
         }`
       }
     >
-      
-        <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-        <div className={styles["window-content"]} id={SlotID.AppBody}>
-          <Routes>
-            <Route path={Path.Login} element={<Login />} />
-            <Route path={Path.Register} element={<Register />}></Route>
-            <Route path={Path.Commodity} element={<Commodity />}></Route>
-            <Route path={`${Path.Paying}/:commodityId`} element={<Paying />}></Route>
-            <Route path={Path.Home} element={<Chat />} />
-            <Route path={Path.NewChat} element={<NewChat />} />
-            <Route path={Path.Masks} element={<MaskPage />} />
-            <Route path={Path.Chat} element={<Chat />} />
-            <Route path={Path.Settings} element={<Settings />} />
-          </Routes>
-        </div>
-      
-    </div>
+      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      <div className={styles["window-content"]} id={SlotID.AppBody}>
+        <Routes>
+          <Route path={Path.Login} element={<Login />} />
+          <Route path={Path.Register} element={<Register />}></Route>
+          <Route path={Path.Commodity} element={<Commodity />}></Route>
+          <Route
+            path={`${Path.Paying}/:commodityId`}
+            element={<Paying />}
+          ></Route>
+          <Route path={Path.Home} element={<Chat />} />
+          <Route path={Path.NewChat} element={<NewChat />} />
+          <Route path={Path.Masks} element={<MaskPage />} />
+          <Route path={Path.Chat} element={<Chat />} />
+          <Route path={Path.Settings} element={<Settings />} />
+        </Routes>
+      </div>
 
+      <div className={styles["footer"]}>
+        <span>浙ICP备2023012007号-1</span>
+      </div>
+    </div>
   );
 }
 
