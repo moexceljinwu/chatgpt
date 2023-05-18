@@ -143,7 +143,7 @@ export function Register() {
             </span>
           </div>
           <div style={{ fontSize: "12px", marginTop: "20px" }}>
-            登录问题联系客服vx：xin2655585
+            注册问题联系vx：chatuai
           </div>
         </div>
       </div>
