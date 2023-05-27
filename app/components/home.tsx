@@ -64,6 +64,13 @@ const Commodity = dynamic(async () => (await import("./commodity")).Commodity, {
 const Paying = dynamic(async () => (await import("./paying")).Paying, {
   loading: () => <Loading noLogo />,
 });
+
+const Recommender = dynamic(
+  async () => (await import("./recommender")).Recommender,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -132,6 +139,7 @@ function Screen() {
             path={`${Path.Paying}/:commodityId`}
             element={<Paying />}
           ></Route>
+          <Route path={Path.Recommender} element={<Recommender />} />
           <Route path={Path.Home} element={<Chat />} />
           <Route path={Path.NewChat} element={<NewChat />} />
           <Route path={Path.Masks} element={<MaskPage />} />
