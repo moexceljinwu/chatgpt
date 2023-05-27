@@ -38,8 +38,8 @@ export function Recommender() {
 
   return (
     <div className="box">
-      <div className="info">
-        <div className="wrap">
+      <div className="recommendInfo">
+        <div className="recommendwrap">
           <div>
             推荐人数：<span>{recommenderInfo.personTotal}</span>人
           </div>
