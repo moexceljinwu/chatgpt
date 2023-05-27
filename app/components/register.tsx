@@ -17,6 +17,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 export function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
   const goLogin = () => {
     navigate("/login");
   };
@@ -51,7 +52,16 @@ export function Register() {
 
   useEffect(() => {
     getCode();
+    getInviteCode();
   }, []);
+
+  function getInviteCode() {
+    const searchParams = new URLSearchParams(location.search);
+    const value = searchParams.get("inviteCode");
+    if (value != null) {
+      setRegisterInfo({ ...registerInfo, recommender: value });
+    }
+  }
 
   function getCode() {
     axios.get("https://test.chatuai.cn/common/captcha").then((res) => {

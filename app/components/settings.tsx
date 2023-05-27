@@ -31,6 +31,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
+import { showToast } from "../components/ui-lib";
 // import { Link} from "react-router-dom";
 import axios from "axios";
 function UserPromptModal(props: { onClose?: () => void }) {
@@ -210,6 +211,8 @@ export function Settings() {
       }
     });
 
+    isRecommender();
+
     document.addEventListener("keydown", keydownEvent);
     return () => {
       document.removeEventListener("keydown", keydownEvent);
@@ -221,6 +224,17 @@ export function Settings() {
   const handleClick = () => {
     console.log("click");
     navigate(Path.Commodity);
+  };
+  const handleInviteClick = async () => {
+    const inviteCode = localStorage.getItem("inviteCode");
+    try {
+      await navigator.clipboard.writeText(
+        "https://chatuai.cn/#/register?inviteCode=" + inviteCode,
+      ); // 将值写入剪贴板
+      showToast("复制成功，快去分享给你的好友吧", 5000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
   };
 
   const getExpire = () => {
@@ -249,8 +263,28 @@ export function Settings() {
     }
     navigate(Path.Login);
   };
+  const isRecommender = () => {
+    const username = JSON.parse(localStorage.getItem("userInfo")).username;
+
+    axios({
+      method: "get",
+      url: "https://test.chatuai.cn/recommender/isRecommender",
+      params: {
+        recommender: username,
+      },
+      withCredentials: true,
+    }).then((res) => {
+      if (res.data.data != "false") {
+        setIsShowInvite(true);
+        localStorage.setItem("inviteCode", res.data.data);
+      } else {
+        setIsShowInvite(false);
+      }
+    });
+  };
 
   let [expire, setExpire] = useState("");
+  let [isShowInvite, setIsShowInvite] = useState(false);
 
   return (
     <ErrorBoundary>
@@ -336,6 +370,18 @@ export function Settings() {
             </span>
             {/* </Link> */}
           </ListItem>
+
+          {isShowInvite && (
+            <ListItem title="邀请好友">
+              <span
+                className={styles["charge"]}
+                style={{ fontSize: "14px" }}
+                onClick={handleInviteClick}
+              >
+                点击复制您的邀请链接
+              </span>
+            </ListItem>
+          )}
 
           {/* <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
