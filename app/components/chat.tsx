@@ -451,7 +451,8 @@ export function Chat() {
         if (!isMobileScreen) inputRef.current?.focus();
         setAutoScroll(true);
       } else {
-        alert("您的时长已经用完");
+        alert("您的时长已用完，请点击充值时长");
+        navigate(Path.Commodity);
       }
     });
   };
