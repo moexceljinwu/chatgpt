@@ -1,5 +1,5 @@
 // @ts-nocheck
-
+import ClipboardJS from "clipboard";
 import { useState, useEffect, useMemo, HTMLProps, useRef, use } from "react";
 
 import styles from "./settings.module.scss";
@@ -227,14 +227,22 @@ export function Settings() {
   };
   const handleInviteClick = async () => {
     const inviteCode = localStorage.getItem("inviteCode");
-    try {
-      await navigator.clipboard.writeText(
-        "https://chatuai.cn/#/register?inviteCode=" + inviteCode,
-      ); // 将值写入剪贴板
+    const inviteUrl = "https://chatuai.cn/#/register?inviteCode=" + inviteCode;
+
+    const clipboard = new ClipboardJS(".inviteBtn", {
+      text: function () {
+        console.log(123);
+        return inviteUrl;
+      },
+    });
+
+    clipboard.on("success", function (e) {
       showToast("复制成功，快去分享给你的好友吧", 5000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
+    });
+
+    clipboard.on("error", function (e) {
+      console.error("Failed to copy text: ", e);
+    });
   };
 
   const getExpire = () => {
@@ -374,8 +382,8 @@ export function Settings() {
           {isShowInvite && (
             <ListItem title="邀请好友">
               <span
-                className={styles["charge"]}
-                style={{ fontSize: "14px" }}
+                className="inviteBtn"
+                style={{ fontSize: "14px", cursor: "pointer" }}
                 onClick={handleInviteClick}
               >
                 点击复制您的邀请链接
