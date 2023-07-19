@@ -14,10 +14,13 @@ export enum Path {
   NewChat = "/new-chat",
   Masks = "/masks",
   Login = "/login",
+  LoginUP = "/loginup",
   Register = "/register",
   Commodity = "/commodity",
   Paying = "/paying",
   Recommender = "/recommender",
+  ChangePh = "/changeph",
+  ModifyPa = "/modifypa",
 }
 
 export enum SlotID {

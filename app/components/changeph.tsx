@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Path } from "../constant";
 import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
-export function Login() {
+export function ChangePh() {
   const [image, setImage] = useState("");
   const navigate = useNavigate();
   const [loginInfo, setLoginInfo] = useState({
@@ -21,7 +21,6 @@ export function Login() {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-    isLogin();
     isTiming();
   }, []);
 
@@ -34,11 +33,15 @@ export function Login() {
   }
 
   function isTiming() {
-    if (localStorage.getItem("starTime") == null) {
+    if (localStorage.getItem("starChangeTime") == null) {
       return;
     }
-    let time = calTime(localStorage.getItem("starTime")!, new Date().getTime());
+    let time = calTime(
+      localStorage.getItem("starChangeTime")!,
+      new Date().getTime(),
+    );
     console.log("time", time);
+
     if (time < 60) {
       setIsDisabled(true);
       let t = 60 - time;
@@ -51,7 +54,6 @@ export function Login() {
           clearInterval(timer);
         }
       }, 1000);
-      // setCurrentInfo(`${time}秒后重新获取`)
     }
   }
 
@@ -60,16 +62,15 @@ export function Login() {
     setIsDisabled(true);
     setCurrentInfo(`正在获取...`);
     axios({
-      url: "https://test.chatuai.cn/common/sendCode",
+      url: "https://test.chatuai.cn/user/sendCodeChangePh",
       method: "get",
       withCredentials: true,
       params: {
         telephone: loginInfo.telephone,
-        type: "login",
       },
     }).then((res) => {
+      localStorage.setItem("starChangeTime", new Date().getTime().toString());
       if (res.data.code == 200) {
-        localStorage.setItem("starTime", new Date().getTime().toString());
         loginInfo.key = res.data.data;
         let timer = setInterval(() => {
           second = second - 1;
@@ -96,36 +97,19 @@ export function Login() {
     console.log(loginInfo);
     await axios({
       method: "post",
-      url: "https://test.chatuai.cn/common/loginph",
+      url: "https://test.chatuai.cn/user/changeph",
       data: loginInfo,
       withCredentials: true,
     }).then((res) => {
       console.log(res);
 
       if (res.data.code == 200) {
-        navigate(Path.Home);
+        navigate(Path.Settings);
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
       } else {
         alert(res.data.msg);
       }
     });
-  }
-
-  function isLogin() {
-    axios({
-      url: "https://test.chatuai.cn/user/checklogin",
-      method: "get",
-      withCredentials: true,
-    }).then((res) => {
-      if (res.data.code == 200) {
-        navigate(Path.Home);
-      } else {
-      }
-    });
-  }
-
-  function goadmin() {
-    alert("请联系管理员进行申诉");
   }
 
   function handleInputChange(
@@ -138,11 +122,17 @@ export function Login() {
 
   return (
     <div className="box">
+      <div className="window-header">
+        <div className="window-header-title">
+          <div className="window-header-main-title">更换手机号</div>
+          <div className="window-header-sub-title">输入新的手机号</div>
+        </div>
+      </div>
       <div className="login-box">
         <div className="info">
           <input
             type="text"
-            placeholder="请输入您的手机号"
+            placeholder="请输入您的新手机号"
             value={loginInfo.telephone}
             onChange={(e) => handleInputChange(e, "telephone")}
             className="username"
@@ -183,10 +173,12 @@ export function Login() {
             />
           </div> */}
           <div className="btn">
-            <button onClick={login}>登录</button>
-            <Link to={Path.Register}>
+            <button onClick={login} style={{ width: "250px" }}>
+              确认
+            </button>
+            {/* <Link to={Path.Register}>
               <button>注册</button>
-            </Link>
+            </Link> */}
           </div>
           <div
             style={{
@@ -194,21 +186,7 @@ export function Login() {
               marginTop: "20px",
               textDecoration: "underline",
             }}
-          >
-            <span
-              style={{ marginRight: "60px", cursor: "pointer" }}
-              onClick={goLoginup}
-            >
-              账号密码登录
-            </span>
-
-            <span style={{ cursor: "pointer" }} onClick={goadmin}>
-              手机号已不再使用？
-            </span>
-          </div>
-          <div style={{ fontSize: "12px", marginTop: "20px" }}>
-            登录问题联系vx：chatuai
-          </div>
+          ></div>
         </div>
       </div>
     </div>

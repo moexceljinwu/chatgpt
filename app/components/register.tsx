@@ -19,21 +19,21 @@ export function Register() {
   const navigate = useNavigate();
   const location = useLocation();
   const goLogin = () => {
-    navigate("/login");
+    navigate(Path.Settings);
   };
-  const [image, setImage] = useState("");
+
   const [registerInfo, setRegisterInfo] = useState({
     username: "",
     password: "",
     telephone: "",
-    email: "",
     recommender: "",
     code: "",
     key: "",
   });
+  const [currentInfo, setCurrentInfo] = useState("获取验证码");
+  const [isDisabled, setIsDisabled] = useState(false);
 
   function register() {
-    console.log(registerInfo);
     axios({
       method: "post",
       url: "https://test.chatuai.cn/common/register",
@@ -42,6 +42,7 @@ export function Register() {
     }).then((res) => {
       console.log(res);
       if (res.data.code == 200) {
+        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
         alert("注册成功");
         goLogin();
       } else {
@@ -50,8 +51,21 @@ export function Register() {
     });
   }
 
+  function isLogin() {
+    axios({
+      url: "https://test.chatuai.cn/user/checklogin",
+      method: "get",
+      withCredentials: true,
+    }).then((res) => {
+      if (res.data.code == 200) {
+        navigate(Path.Home);
+      } else {
+      }
+    });
+  }
+
   useEffect(() => {
-    getCode();
+    // getCode();
     getInviteCode();
   }, []);
 
@@ -63,10 +77,85 @@ export function Register() {
     }
   }
 
+  useEffect(() => {
+    isLogin();
+    isTiming();
+  }, []);
+
+  function isTiming() {
+    if (localStorage.getItem("starRegisterTime") == null) {
+      return;
+    }
+    let time = calTime(
+      localStorage.getItem("starRegisterTime")!,
+      new Date().getTime(),
+    );
+    console.log("time", time);
+    if (time < 60) {
+      setIsDisabled(true);
+      let t = 60 - time;
+      let timer = setInterval(() => {
+        t = t - 1;
+        setCurrentInfo(`${t}秒后重新获取`);
+        if (t <= 0) {
+          setIsDisabled(false);
+          setCurrentInfo(`重新获取`);
+          clearInterval(timer);
+        }
+      }, 1000);
+      // setCurrentInfo(`${time}秒后重新获取`)
+    }
+  }
+
+  function calTime(starTime: string, currentTime: number) {
+    const starTimeInt = parseInt(starTime);
+    console.log("starTime", starTimeInt);
+    console.log("currentTime", currentTime);
+
+    return Math.floor((currentTime - starTimeInt) / 1000);
+  }
+
+  // function getCode() {
+  //   axios.get("https://test.chatuai.cn/common/captcha").then((res) => {
+  //     registerInfo.key = res.data.data.key;
+  //     setImage(res.data.data.image);
+  //   });
+  // }
+
   function getCode() {
-    axios.get("https://test.chatuai.cn/common/captcha").then((res) => {
-      registerInfo.key = res.data.data.key;
-      setImage(res.data.data.image);
+    let second = 60;
+    setIsDisabled(true);
+    setCurrentInfo(`正在获取...`);
+    axios({
+      url: "https://test.chatuai.cn/common/sendCode",
+      method: "get",
+      withCredentials: true,
+      params: {
+        telephone: registerInfo.telephone,
+        type: "register",
+      },
+    }).then((res) => {
+      console.log(res.data);
+      if (res.data.code == 200) {
+        localStorage.setItem(
+          "starRegisterTime",
+          new Date().getTime().toString(),
+        );
+        registerInfo.key = res.data.data;
+        let timer = setInterval(() => {
+          second = second - 1;
+          setCurrentInfo(`${second}秒后重新获取`);
+          if (second <= 0) {
+            setIsDisabled(false);
+            setCurrentInfo(`重新获取`);
+            clearInterval(timer);
+          }
+        }, 1000);
+      } else {
+        setIsDisabled(false);
+        setCurrentInfo(`获取验证码`);
+        alert(res.data.msg);
+      }
     });
   }
 
@@ -86,6 +175,7 @@ export function Register() {
             placeholder="请输入您的账号"
             value={registerInfo.username}
             onChange={(e) => handleInputChange(e, "username")}
+            // className="username"
           />{" "}
           <br />
           <input
@@ -100,14 +190,19 @@ export function Register() {
             placeholder="请输入您的手机号"
             value={registerInfo.telephone}
             onChange={(e) => handleInputChange(e, "telephone")}
+            // className="username"
           />{" "}
           <br />
           <input
-            type="text"
-            placeholder="请输入您的邮箱"
-            value={registerInfo.email}
-            onChange={(e) => handleInputChange(e, "email")}
+            type="password"
+            placeholder="请输入验证码"
+            value={registerInfo.code}
+            onChange={(e) => handleInputChange(e, "code")}
+            className="password"
           />{" "}
+          <button className="codeBtn" onClick={getCode} disabled={isDisabled}>
+            {currentInfo}
+          </button>
           <br />
           <input
             type="text"

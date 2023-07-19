@@ -64,6 +64,15 @@ const Commodity = dynamic(async () => (await import("./commodity")).Commodity, {
 const Paying = dynamic(async () => (await import("./paying")).Paying, {
   loading: () => <Loading noLogo />,
 });
+const LoginUp = dynamic(async () => (await import("./login-up")).LoginUp, {
+  loading: () => <Loading noLogo />,
+});
+const ChangePh = dynamic(async () => (await import("./changeph")).ChangePh, {
+  loading: () => <Loading noLogo />,
+});
+const ModifyPa = dynamic(async () => (await import("./modifypa")).ModifyPa, {
+  loading: () => <Loading noLogo />,
+});
 
 const Recommender = dynamic(
   async () => (await import("./recommender")).Recommender,
@@ -132,7 +141,10 @@ function Screen() {
       <SideBar className={isHome ? styles["sidebar-show"] : ""} />
       <div className={styles["window-content"]} id={SlotID.AppBody}>
         <Routes>
+          <Route path={Path.ModifyPa} element={<ModifyPa />} />
+          <Route path={Path.ChangePh} element={<ChangePh />} />
           <Route path={Path.Login} element={<Login />} />
+          <Route path={Path.LoginUP} element={<LoginUp />} />
           <Route path={Path.Register} element={<Register />}></Route>
           <Route path={Path.Commodity} element={<Commodity />}></Route>
           <Route

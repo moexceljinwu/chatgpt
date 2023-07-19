@@ -272,7 +272,12 @@ export function Settings() {
     navigate(Path.Login);
   };
   const isRecommender = () => {
-    const username = JSON.parse(localStorage.getItem("userInfo")).username;
+    let username = "";
+    if (localStorage.getItem("userInfo") == null) {
+      username = "未登录";
+    } else {
+      username = JSON.parse(localStorage.getItem("userInfo")).username;
+    }
 
     axios({
       method: "get",
@@ -290,6 +295,13 @@ export function Settings() {
       }
     });
   };
+
+  function gochange() {
+    navigate(Path.ChangePh);
+  }
+  function goModifyPa() {
+    navigate(Path.ModifyPa);
+  }
 
   let [expire, setExpire] = useState("");
   let [isShowInvite, setIsShowInvite] = useState(false);
@@ -377,6 +389,19 @@ export function Settings() {
               {expire} <span style={{ fontSize: "12px" }}>(点击充值时长)</span>
             </span>
             {/* </Link> */}
+          </ListItem>
+
+          <ListItem title="绑定手机">
+            <span onClick={gochange} className={styles["charge"]}>
+              {JSON.parse(localStorage.getItem("userInfo")!).telephone}{" "}
+              <span style={{ fontSize: "12px" }}>(点击换绑)</span>
+            </span>
+          </ListItem>
+
+          <ListItem title="更改密码">
+            <span onClick={goModifyPa} className={styles["charge"]}>
+              修改密码
+            </span>
           </ListItem>
 
           {isShowInvite && (
